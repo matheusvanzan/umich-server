@@ -1,0 +1,80 @@
+{% extends master_scrud %}
+
+{% block show_all %}
+    <h1 class="bg-white content-heading border-bottom">Usuários</h1>
+    <table class="colVis table">
+        <thead class="bg-gray">
+        <tr>
+            <th>Nome</th>
+            <th>Sobrenome</th>
+            <th>Login</th>
+            <th>Email</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for u in users %}
+            <tr>
+                <td>{{ u.first_name }}</td>
+                <td>{{ u.last_name }}</td>
+                <td>{{ u.username }}</td>
+                <td>{{ u.email }}</td>
+                <td>
+                    <button class="btn btn-success"><a href="{% url 'user' u.id %}" style="color: white;">Editar</a></button>
+                </td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <td><a href="{% url 'user' %}">Novo...</a></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block scrud %}
+    <h1 class="bg-white content-heading border-bottom">Usuário</h1>
+
+    {{ error_message }}
+
+    {% if user_id %}
+        <form action="{% url 'user' user_id %}" method="post">
+    {% else %}
+        <form action="{% url 'user' %}" method="post">
+    {% endif %}
+            {% csrf_token %}
+            <table class="colVis table">
+                <tbody>
+                    {% for field in form %}
+                        <tr>
+                            <td>{{ field.label_tag }}</td>
+                            <td>{{ field }}</td>
+                            <td><strong style="color:red;">{{ field.errors }}</strong></td>
+                        </tr>
+                    {% endfor %}
+                    <tr>
+                        <td>
+                            <button type="submit" class="btn btn-success" style="color: white;">
+                                Salvar
+                            </button>
+                        </td>
+                        <td></td>
+                        {% if user_id %}
+                            {% if user.is_superuser %}
+                                <td>
+                                    <button class="btn btn-danger">
+                                        <a href="{% url 'user_deactivate' user_id %}" style="color: white;">
+                                            Deletar
+                                        </a>
+                                    </button>
+                                </td>
+                            {% endif %}
+                        {% endif %}
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+{% endblock %}

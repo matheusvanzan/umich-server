@@ -1,0 +1,11 @@
+{% extends master %}
+
+{% block content %}
+    {% if show_all == 'true' %}
+        {% block show_all %}
+        {% endblock %}
+    {% else %}
+        {% block scrud %}
+        {% endblock %}
+    {% endif %}
+{% endblock %}

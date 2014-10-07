@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<head>
+    {% load static %}
+
+    <title></title>
+
+</head>
+<body>
+
+<form role="form" method="post" action="{% url 'login' %}">
+    {% csrf_token %}
+    <div>
+        <label>Login</label>
+        <input type="text" id="username" name="username" placeholder="Enter login">
+    </div>
+    <div>
+        <label>Password</label>
+        <input type="password" class="form-control" id="password" name="password"
+               placeholder="Password">
+    </div>
+    <button type="submit">Login</button>
+    <div>
+        <label>
+            <input type="checkbox"> Remember my details
+        </label>
+    </div>
+</form>
+
+</body>
+</html>
