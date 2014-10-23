@@ -1,0 +1,43 @@
+
+/*Important*/
+/*To secure correct behavior in older browsers*/
+header, section, footer, aside, nav, main, article, figure {
+    display: block;
+}
+
+/* General effect styles */
+
+
+
+/* Specific effects: Classes */
+
+
+
+
+/* Specific effects: Id's */
+
+#menu {
+    position: absolute;
+    z-index: 100;
+    background-color: #003D66;
+    color: white;
+
+    left: -20%;
+
+    display: none;
+    width: 20%;
+    height: 100%;
+}
+
+#menuButton {
+    position: absolute;
+    z-index: 100;
+    top: 15%;
+
+    border-radius: 0 10px 10px 0;
+
+    width: 2%;
+    height: 8%;
+    min-width: 10px;
+    min-height: 30px;
+}

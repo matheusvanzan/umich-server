@@ -1,0 +1,24 @@
+html {
+    position: relative;
+}
+
+body {
+    background-color: #809EB2;
+}
+
+div {
+    /*border-style: solid;*/
+}
+
+/*Important*/
+/*To secure correct behavior in older browsers*/
+header, section, footer, aside, nav, main, article, figure {
+    display: block;
+}
+
+#content {
+    height: 100%;
+    width: 100%;
+    
+    float: right;
+}

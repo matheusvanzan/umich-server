@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User as DjangoUser
 from django.contrib.auth.models import Group as DjangoGroup
+from django.templatetags.static import static
 
 
 class Scrud(models.Model):
@@ -46,11 +47,47 @@ class Group(DjangoGroup):
         pass
 
 
-        # class Note(models.Model):
-        # title = models.CharField(max_length=200)
-        # body = models.CharField(max_length=1000)
-        # 	date_created = DateTimeField(auto_now_add=True)
-        # 	date_last_edited = DateTimeField(auto_now=True)
-        #
-        # 	def __str__(self):
-        # 		return self.title + ': ' + self.body
+#### Specific application models
+
+DEVICE_TYPES = (
+    ('pc', 'Computer'),
+    ('phone', 'Cellphone'),
+    ('printer', 'Printer'),
+    ('hub', 'Hub'),
+    ('router', 'Router'),
+    ('modem', 'Modem')
+)
+
+
+class Device(models.Model):
+    type = models.CharField(choices=DEVICE_TYPES, max_length=100)
+    name = models.CharField(max_length=100)
+    lastOn = models.DateTimeField()
+    lastOnline = models.DateTimeField()
+    ipAddress = models.CharField(max_length=100)
+    macAddress = models.CharField(max_length=100)
+    opSystem = models.CharField(max_length=100)
+    isWireless = models.BooleanField()
+
+    @property
+    def getImage(self):
+        onOff = ''
+        if self.isOnline():
+            onOff = 'on'
+        else:
+            onOff = 'off'
+
+        return static('images/' + self.type + '_' + onOff + '.png')
+
+    def isOn(self):
+        return True
+
+    def isOnline(self):
+        return True
+
+
+class SiteHistory(models.Model):
+    device = models.ForeignKey(Device)
+    timestamp = models.DateTimeField()
+    url = models.URLField()
+    band = models.FloatField()

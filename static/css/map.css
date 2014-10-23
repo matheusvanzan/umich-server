@@ -1,0 +1,105 @@
+html, body {
+    height: 100%;
+    width: 100%;
+}
+
+/* General effect styles */
+
+div.device{
+    margin: auto;
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+
+    width: 100px;
+    height: 100px;
+
+    background: none;
+}
+
+div.deviceHover{
+    margin: auto;
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+
+    width: 100px;
+    height: 100px;
+
+    background: url("../images/shadow.png")
+        no-repeat center bottom;
+    background-size: 100% 35%;
+}
+
+img.device {
+    margin: auto;
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+
+    /*width: 95%;*/
+    height: 95%;
+}
+
+/*img.device:hover {*/
+    /*-moz-box-shadow: 0 0 10px #ccc;*/
+    /*-webkit-box-shadow: 0 0 10px #ccc;*/
+    /*box-shadow: 0 0 10px #ccc;*/
+/*}*/
+
+div.center {
+    display: none;
+    margin: auto;
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+    text-align: center;
+
+    /*background-color: red;*/
+}
+
+table.center {
+    width: 100%;
+    margin: auto;
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+
+    font-size: 1.3vw;
+
+    /*background-color: green;*/
+}
+
+th.center {
+    text-align: center;
+    padding-bottom: 2%;
+
+    font-size: 1.5vw;
+}
+
+td.center {
+    text-align: center;
+    padding-top: 2%;
+}
+
+td.right {
+    text-align: right;
+    width: 50%;
+    padding-right: 1%;
+}
+
+td.left {
+    text-align: left;
+    width: 50%;
+    padding-left: 1%;
+}
+
+
+/* Specific effects: Classes */
+
+.container {
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
+
+/* Specific effects: Id's */
+
+#map {
+    /*background-color: red;*/
+}

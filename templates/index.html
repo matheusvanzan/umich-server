@@ -1,8 +1,120 @@
 {% extends master %}
+{% load staticfiles %}
+
+{% block headers %}
+
+    <link rel="stylesheet" href="{% static 'css/map.css' %}"/>
+{% endblock %}
 
 {% block content %}
-    {% load staticfiles %}
 
-    index
+    <div class="row container">
+        <div id="map" class="span12 container">
+            {% for device in devices %}
+                <div id="info_{{ device.id }}" class="center">
+                    <table class="center">
+                        <thead>
+                            <tr>
+                                <th colspan="2" class="center">
+                                    <b>{{ device.name }}</b>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="right"><b>Type</b></td>
+                                <td class="left">{{ device.type }}</td>
+                            </tr>
+                            <tr>
+                                <td class="right"><b>Mac Address</b></td>
+                                <td class="left">{{ device.macAddress }}</td>
+                            </tr>
+                            <tr>
+                                <td class="right"><b>IP Address</b></td>
+                                <td class="left">{{ device.ipAddress }}</td>
+                            </tr>
+                            <tr>
+                                <td class="right"><b>Operating System</b></td>
+                                <td class="left">{{ device.opSystem }}</td>
+                            </tr>
+                            <tr>
+                                <td class="right"><b>Last time turned On</b></td>
+                                <td class="left">{{ device.lastOn }}</td>
+                            </tr>
+                            <tr>
+                                <td class="right"><b>Last time Online</b></td>
+                                <td class="left">{{ device.lastOnline }}</td>
+                            </tr>
+                            <tr>
+                                <td class="right"><b>Is Wireless</b></td>
+                                <td class="left">{{ device.isWireless }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="center"><a>More info...</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
 
+
+    <script type="text/javascript">
+        var n = {{ devices|length }};
+        var teta = 2 * Math.PI / n;
+
+        var $map = $("#map");
+        var radius = $map.height() * 0.8;
+
+        var $lastInfo, $lastDevice;
+
+        $(document).ready(loadMap());
+
+        $( window ).resize(function() {
+          loadMap();
+        });
+
+        function loadMap() {
+            //set info div size
+
+            {% for device in devices %}
+                var $info_{{ device.id }} = $("#info_{{ device.id }}");
+
+                var factor = 2/3;
+                $info_{{ device.id }}.width(radius * factor);
+                $info_{{ device.id }}.height(radius * factor);
+
+                var $device_{{ device.id }} = $('' +
+                        '<div name="device_{{ forloop.counter0 }}" class="device"></div>');
+                $map.append($device_{{ device.id }});
+
+                $device_{{ device.id }}.hover(function () {
+                    if($lastDevice){
+                        $lastDevice.removeClass("deviceHover"); //for some reason it doesn't overwrites
+                        $lastDevice.addClass("device");
+                    }
+                    $lastDevice = $device_{{ device.id }};
+                    $device_{{ device.id }}.addClass("deviceHover");
+
+                    if ($lastInfo) $lastInfo.hide();
+                    $lastInfo = $info_{{ device.id }};
+                    $info_{{ device.id }}.show();
+                });
+
+                $device_{{ device.id }}.animate({
+                    "left": "+=" + (radius * Math.sin(teta * {{ forloop.counter0 }})).toString(),
+                    "bottom": "+=" + (radius * Math.cos(teta * {{ forloop.counter0 }})).toString()
+                }, 1500, "linear");
+
+                var $img_{{ device.id }} = $('<img>', {
+                    "name": "img_" + "{{ forloop.counter0 }}",
+                    "class": "device",
+                    "src": "{{ device.getImage }}"
+                });
+                $device_{{ device.id }}.append($img_{{ device.id }});
+
+            {% endfor %}
+        }
+    </script>
 {% endblock %}
