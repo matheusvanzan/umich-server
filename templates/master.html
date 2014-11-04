@@ -12,7 +12,8 @@
     <link rel="stylesheet" href="{% static 'css/menu.css' %}"/>
 
 
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    {#    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>#}
+    <script src="{% static 'js/jquery.min.js' %}"></script>
 
 
     {% block headers %}{% endblock %}
@@ -22,21 +23,49 @@
 <!-- Content -->
 
 
-<button id="menuButton"> ></button>
+<button id="menuButton"></button>
 
 
 <div id="menu">
-    my menu itemns
 
-    <br>
+    <h3 class="title">Network Control Panel</h3>
 
-    another item
+    <ul class="menu">
+        <li class="menuItem"><a href="#">Devices</a>
+{#            <ul class="menu">#}
+{#                <li class="menuItem">subitem</li>#}
+{#            </ul>#}
+        </li>
+        <li class="menuItem"><a href="#">Statistics</a></li>
+        <li class="menuItem"><a href="#">Auth Control</a></li>
+        <li class="menuItem"><a href="#">Configuration</a></li>
+        <li class="menuItem"><a href="#">Script</a></li>
+        <li class="menuItem"><a href="#">About</a></li>
+    </ul>
+
+    <div class="more">
+        <hr>
+        {% block more %}{% endblock %}
+    </div>
 </div>
 
 <div id="content">
-    {% block content %}
+    <div class="topBar">
+        <div class="pageTitle">
+            <h3>{% block pageTitle %}{% endblock %}</h3>
+        </div>
+        <div class="user">
 
-    {% endblock %}
+        </div>
+    </div>
+
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+
+    <div class="bottomBar">
+        Developed by MV Developers
+    </div>
 </div>
 
 <script type="text/javascript">
@@ -49,26 +78,33 @@
 
     var showMenu = true;
 
+    $(document).ready(function () {
+        {#      menuShow();#}
+    });
+
     $(function () {
         $menuButton.click(function () {
-            if (showMenu){
-                $menu.show();
-
-                $menu.animate({left: "0"}, duration, easing);
-                $content.animate({width: "80%"}, duration, easing);
-
-                $menuButton.animate({left: "20%"}, duration, easing);
-            }else{
-                $menu.animate({left: "-20%"}, duration, easing);
-                $content.animate({width: "100%"}, duration, easing);
-
-                $menuButton.animate({left: "0"}, duration, easing);
-            }
-
+            if (showMenu) menuShow();
+            else menuHide();
             showMenu = !showMenu;
         });
     });
 
+    function menuShow() {
+        $menu.show();
+
+        $menu.animate({left: "0"}, duration, easing);
+        $content.animate({width: "80%"}, duration, easing);
+
+        {#                $menuButton.animate({left: "20%"}, duration, easing);#}
+    }
+
+    function menuHide() {
+        $menu.animate({left: "-20%"}, duration, easing);
+        $content.animate({width: "100%"}, duration, easing);
+
+        {#                $menuButton.animate({left: "0"}, duration, easing);#}
+    }
 
 </script>
 </body>

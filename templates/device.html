@@ -1,0 +1,26 @@
+{% extends master %}
+{% load staticfiles %}
+
+{% block headers %}
+
+    <link rel="stylesheet" href="{% static 'css/map.css' %}"/>
+{% endblock %}
+
+{% block more %}
+    What would you like to do now?
+
+
+
+{% endblock %}
+
+{% block pageTitle %}{{ device.name }}{% endblock %}q
+
+{% block content %}
+
+    Device id: {{ device.id }}
+
+    <br>
+
+    Device details: {{ device }}
+
+{% endblock %}

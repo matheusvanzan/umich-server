@@ -1,0 +1,76 @@
+body {
+    width: 100%;
+    height: 100%;
+}
+
+div.title {
+    width: 100%;
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: 5% auto auto auto;
+    text-align: center;
+}
+
+div.center {
+    width: 30%;
+    height: 30%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+
+div.up {
+    width: 100%;
+    height: 25%;
+    background-color: #003D66;
+    border-radius: 15px 15px 0 0;
+    margin: 0;
+}
+
+div.down {
+    width: 100%;
+    height: 25%;
+    background-color: #003D66;
+    border-radius: 0 0 15px 15px;
+    margin: 0;
+}
+
+div.middle {
+    width: 100%;
+    margin: 0;
+    padding: 5%;
+    background-color: cornflowerblue;
+}
+
+table {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+
+td {
+    padding: 3%;
+}
+
+td.right {
+    text-align: right;
+}
+
+td.left {
+    text-align: left;
+}
+
+button {
+    width: 100%;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 5% auto 5% auto;
+}

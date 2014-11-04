@@ -6,57 +6,88 @@
     <link rel="stylesheet" href="{% static 'css/map.css' %}"/>
 {% endblock %}
 
-{% block content %}
+{% block more %}
+    What would you like to do now?
 
-    <div class="row container">
-        <div id="map" class="span12 container">
-            {% for device in devices %}
-                <div id="info_{{ device.id }}" class="center">
-                    <table class="center">
-                        <thead>
-                            <tr>
-                                <th colspan="2" class="center">
-                                    <b>{{ device.name }}</b>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td class="right"><b>Type</b></td>
-                                <td class="left">{{ device.type }}</td>
-                            </tr>
-                            <tr>
-                                <td class="right"><b>Mac Address</b></td>
-                                <td class="left">{{ device.macAddress }}</td>
-                            </tr>
-                            <tr>
-                                <td class="right"><b>IP Address</b></td>
-                                <td class="left">{{ device.ipAddress }}</td>
-                            </tr>
-                            <tr>
-                                <td class="right"><b>Operating System</b></td>
-                                <td class="left">{{ device.opSystem }}</td>
-                            </tr>
-                            <tr>
-                                <td class="right"><b>Last time turned On</b></td>
-                                <td class="left">{{ device.lastOn }}</td>
-                            </tr>
-                            <tr>
-                                <td class="right"><b>Last time Online</b></td>
-                                <td class="left">{{ device.lastOnline }}</td>
-                            </tr>
-                            <tr>
-                                <td class="right"><b>Is Wireless</b></td>
-                                <td class="left">{{ device.isWireless }}</td>
-                            </tr>
-                            <tr>
-                                <td colspan="2" class="center"><a>More info...</a></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            {% endfor %}
-        </div>
+    <br>
+
+    <ul>
+        <li><a href="#">Item 1</a></li>
+        <li><a href="#">Item 2</a></li>
+        <li><a href="#">Item 3</a></li>
+        <li><a href="#">Item 4</a></li>
+        <li><a href="#">Item 5</a></li>
+    </ul>
+
+{% endblock %}
+
+{% block pageTitle %}Network Map{% endblock %}
+
+{% block content %}
+    <div class="switch">
+        <button id="buttonCircle" class="leftButton">Circle</button>
+        <button id="buttonList" class="middleButton">List</button>
+        <button id="buttonMap" class="rightButton">Map</button>
+        <br><br>
+        <button id="buttonCon" class="myButton">Show connections</button>
+    </div>
+
+
+    <div id="map" class="container">
+        {% for device in devices %}
+            <div id="info_{{ device.id }}" class="centerV hidden">
+                <table class="center">
+                    <thead>
+                    <tr>
+                        <th colspan="2" class="center">
+                            <b>{{ device.name }}</b>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="right"><b>Type</b></td>
+                        <td class="left">{{ device.get_type_display }}</td>
+                    </tr>
+                    <tr>
+                        <td class="right"><b>Mac Address</b></td>
+                        <td class="left">{{ device.macAddress }}</td>
+                    </tr>
+                    <tr>
+                        <td class="right"><b>IP Address</b></td>
+                        <td class="left">{{ device.ipAddress }}</td>
+                    </tr>
+                    <tr>
+                        <td class="right"><b>Operating System</b></td>
+                        <td class="left">{{ device.opSystem }}</td>
+                    </tr>
+                    <tr>
+                        <td class="right"><b>Last turned On</b></td>
+                        <td class="left">{{ device.lastOn }}</td>
+                    </tr>
+                    <tr>
+                        <td class="right"><b>Last Online</b></td>
+                        <td class="left">{{ device.lastOnline }}</td>
+                    </tr>
+                    <tr>
+                        <td class="right"><b>Is Wireless</b></td>
+                        <td class="left">{{ device.isWireless }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="center"><a class="notLink" href="{% url 'device' device.id %}">More info...</a></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="device_{{ device.id }}" class="device">
+                <a class="notLink" href="{% url 'device' device.id %}">
+                    <b>{{ device.name }}</b>
+                    <br><br>
+                    <img id="img_{{ device.id }}" class="device" src="{{ device.getImage }}"/>
+                </a>
+            </div>
+        {% endfor %}
     </div>
 
 
@@ -65,56 +96,176 @@
         var teta = 2 * Math.PI / n;
 
         var $map = $("#map");
-        var radius = $map.height() * 0.8;
+        var radius = $map.height() / 2 * 0.9;
+        var infoSize = $map.height() / 2;
 
         var $lastInfo, $lastDevice;
 
-        $(document).ready(loadMap());
+        var duration = 2000;
+        var easing = "swing";
 
-        $( window ).resize(function() {
-          loadMap();
-        });
+        {% for device in devices %}
+            var $info_{{ device.id }} = $("#info_{{ device.id }}");
+            var $device_{{ device.id }} = $("#device_{{ device.id }}");
+        {% endfor %}
 
-        function loadMap() {
-            //set info div size
+        $buttonCircle = $("#buttonCircle");
+        $buttonList = $("#buttonList");
+        $buttonMap = $("#buttonMap");
+
+        $(document).ready(function () {
+
+            loadItems();
+
+            //set DEVICE circle position
+            loadCircle();
 
             {% for device in devices %}
-                var $info_{{ device.id }} = $("#info_{{ device.id }}");
-
-                var factor = 2/3;
-                $info_{{ device.id }}.width(radius * factor);
-                $info_{{ device.id }}.height(radius * factor);
-
-                var $device_{{ device.id }} = $('' +
-                        '<div name="device_{{ forloop.counter0 }}" class="device"></div>');
-                $map.append($device_{{ device.id }});
-
+                //set DEVICE hover shadow
                 $device_{{ device.id }}.hover(function () {
-                    if($lastDevice){
-                        $lastDevice.removeClass("deviceHover"); //for some reason it doesn't overwrites
+                    if ($lastDevice) {
+                        $lastDevice.removeClass("deviceHover");
                         $lastDevice.addClass("device");
                     }
-                    $lastDevice = $device_{{ device.id }};
+                    $device_{{ device.id }}.removeClass("device");
                     $device_{{ device.id }}.addClass("deviceHover");
+                    $lastDevice = $device_{{ device.id }};
 
-                    if ($lastInfo) $lastInfo.hide();
+                    if ($lastInfo) {
+                        $lastInfo.addClass("hidden");
+                    }
+                    $info_{{ device.id }}.removeClass("hidden");
                     $lastInfo = $info_{{ device.id }};
-                    $info_{{ device.id }}.show();
                 });
-
-                $device_{{ device.id }}.animate({
-                    "left": "+=" + (radius * Math.sin(teta * {{ forloop.counter0 }})).toString(),
-                    "bottom": "+=" + (radius * Math.cos(teta * {{ forloop.counter0 }})).toString()
-                }, 1500, "linear");
-
-                var $img_{{ device.id }} = $('<img>', {
-                    "name": "img_" + "{{ forloop.counter0 }}",
-                    "class": "device",
-                    "src": "{{ device.getImage }}"
-                });
-                $device_{{ device.id }}.append($img_{{ device.id }});
 
             {% endfor %}
+        });
+
+        $map.resize(function () {
+           //reload everuthing
+        });
+
+        function loadItems() {
+            {% for device in devices %}
+                //set INFO size
+                $info_{{ device.id }}.width(infoSize);
+                $info_{{ device.id }}.height(infoSize);
+
+
+                //set DEVICE position
+                var left = $map.width() / 2 - $device_{{ device.id }}.width() / 2;
+                var top = $map.height() / 2 - $device_{{ device.id }}.height() / 2;
+                $device_{{ device.id }}.offset({ top: top, left: left });
+                $info_{{ device.id }}.offset({ top: top, left: left });
+            {% endfor %}
         }
+
+        function loadCircle() {
+            {% for device in devices %}
+                //relocate INFOS
+                $info_{{ device.id }}.animate({
+                    "left": Math.floor($map.width() / 2 - $info_{{ device.id }}.width() / 2).toString() + "px",
+                    "top": Math.floor($map.height() / 2 - $info_{{ device.id }}.height()).toString() + "px"
+                }, duration, easing);
+
+                //relocate DEVICES
+                var left = $map.width() / 2 - $device_{{ device.id }}.width() / 2;
+                var top = $map.height() / 2 - $device_{{ device.id }}.height() / 2;
+
+                $device_{{ device.id }}.animate({
+                    "left": Math.floor(left + radius * Math.sin(teta * {{ forloop.counter0 }})).toString() + "px",
+                    "top": Math.floor(top + radius * Math.cos(teta * {{ forloop.counter0 }})).toString() + "px"
+                }, duration, easing);
+            {% endfor %}
+
+            {#            $buttonCircle.css("disabled: true;");#}
+            {#            $buttonList.css("disabled: false;");#}
+            {#            $buttonMap.css("disabled: false;");#}
+        }
+
+        function loadList() {
+            var lastType = "";
+            var leftBorder;
+
+            var deviceOffset = 100;
+            var deviceSpaceH = 150, deviceSpaceV = 120;
+
+            var row = 0, count = 0;
+            var quantRow = ($map.offset().left + $map.width() - infoSize - deviceOffset) / (deviceSpaceH) - 1;
+
+            {% for device in devices %}
+                //relocate INFOS
+                $info_{{ device.id }}.animate({
+                    "left": ($map.offset().left + 10).toString() + "px",
+                    "top": "+=0"
+                }, duration, easing);
+
+                //relocate DEVICES
+                var left = infoSize + deviceOffset + count * deviceSpaceH;
+                {#                                alert(count + ": " + quantRow);#}
+
+                count += 1;
+
+                if ((count > quantRow) || (lastType != "{{ device.type }}")) {
+                    row += 1;
+                    count = 0;
+                    lastType = "{{ device.type }}";
+                }
+
+                var top = deviceSpaceV * (row - 1); //dont remember why -1
+
+                {#                alert((left).toString() + "px - " + $map.width().toString());#}
+
+                $device_{{ device.id }}.animate({
+                    "left": Math.floor(left).toString() + "px",
+                    "top": Math.floor(top).toString() + "px"
+                }, duration, easing);
+            {% endfor %}
+        }
+
+        function loadMap() {
+            //hide all info
+            {% for device in devices %}
+                $info_{{ device.id }}.addClass("hidden");
+            {% endfor %}
+
+            //position first device
+            var left = $map.width() / 2 - $device_{{ firstDevice.id }}.width() / 2;
+            var top = $map.height() / 2 - $device_{{ firstDevice.id }}.height() / 2;
+
+            $device_{{ firstDevice.id }}.animate({
+                "left": Math.floor(left).toString() + "px",
+                "top": Math.floor(top).toString() + "px"
+            }, duration, easing);
+
+            //position connected to first device
+            drawCircle({{ firstDevice.id }});
+
+            function drawCircle(deviceCenterId) {
+
+                {#                {% for device in firstDevice|id:0.getConnectedDevices %}#}
+                {#                {% for device in devices %}#}
+                {#                    $device_{{ device.id }}.animate({#}
+                {#                        "left": Math.floor(left).toString() + "px",#}
+                {#                        "top": Math.floor(top).toString() + "px"#}
+                {#                    }, duration, easing);#}
+                {#                {% endfor %}#}
+            }
+
+            //repeat for each device connected to first device
+
+        }
+
+
+        $buttonCircle.click(function () {
+            loadCircle()
+        });
+        $buttonList.click(function () {
+            loadList()
+        });
+        $buttonMap.click(function () {
+            loadMap()
+        });
+
     </script>
 {% endblock %}

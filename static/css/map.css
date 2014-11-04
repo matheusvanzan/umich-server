@@ -4,72 +4,103 @@ html, body {
 }
 
 /* General effect styles */
-
-div.device{
-    margin: auto;
-    position: absolute;
-    top: 0; left: 0; bottom: 0; right: 0;
-
-    width: 100px;
-    height: 100px;
-
-    background: none;
+div.hidden {
+    display: none;
 }
 
-div.deviceHover{
+div.centerV {
     margin: auto;
     position: absolute;
-    top: 0; left: 0; bottom: 0; right: 0;
+    top: 0;
+    bottom: 0;
 
+    /*background-color: red;*/
+}
+
+div.centerH {
+    margin: auto;
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: center;
+
+    /*background-color: red;*/
+}
+
+div.fixed {
+    position: fixed;
+}
+
+div.left {
+    margin: auto;
+    position: absolute;
+    left: 0;
+
+    /*background-color: red;*/
+}
+
+div.device {
+    margin: auto;
+    position: absolute;
     width: 100px;
     height: 100px;
+    text-align: center;
 
-    background: url("../images/shadow.png")
-        no-repeat center bottom;
+    background: none;
+    /*background-color: red;*/
+}
+
+div.deviceHover {
+    margin: auto;
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    text-align: center;
+
+    background: url("../images/shadow.png") no-repeat center bottom;
     background-size: 100% 35%;
+}
+
+div.switch {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-top: 2%;
+    margin-right: 2%;
+    z-index: 200;
 }
 
 img.device {
     margin: auto;
     position: absolute;
-    top: 0; left: 0; bottom: 0; right: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 100;
 
-    /*width: 95%;*/
-    height: 95%;
-}
-
-/*img.device:hover {*/
-    /*-moz-box-shadow: 0 0 10px #ccc;*/
-    /*-webkit-box-shadow: 0 0 10px #ccc;*/
-    /*box-shadow: 0 0 10px #ccc;*/
-/*}*/
-
-div.center {
-    display: none;
-    margin: auto;
-    position: absolute;
-    top: 0; left: 0; bottom: 0; right: 0;
-    text-align: center;
-
-    /*background-color: red;*/
+    height: 70%;
 }
 
 table.center {
     width: 100%;
     margin: auto;
     position: absolute;
-    top: 0; left: 0; bottom: 0; right: 0;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    border: none;
 
-    font-size: 1.3vw;
+    font-size: 1.2vw;
 
     /*background-color: green;*/
 }
 
 th.center {
     text-align: center;
-    padding-bottom: 2%;
+    padding-bottom: 4%;
 
-    font-size: 1.5vw;
+    font-size: 1.7vw;
 }
 
 td.center {
@@ -89,8 +120,33 @@ td.left {
     padding-left: 1%;
 }
 
+button.leftButton {
+    width: 70px;
+    border-radius: 15px 0 0 15px;
+    border: 0;
+    padding: 0;
+}
 
-/* Specific effects: Classes */
+button.middleButton {
+    width: 70px;
+    border-radius: 0;
+    border: 0;
+    padding: 0;
+}
+
+button.rightButton {
+    width: 70px;
+    border-radius: 0 15px 15px 0;
+    border: 0;
+    padding: 0;
+}
+
+button.myButton {
+    border-radius: 15px;
+    width: 220px;
+    border: 0;
+    padding: 0;
+}
 
 .container {
     position: relative;

@@ -1,6 +1,7 @@
 # -*- coding: cp1252 -*-
 
 from .CheckLoginView import CheckLoginView
+from .DeviceView import DeviceView
 from .ErrorView import ErrorView
 from .GroupView import GroupView
 from .IndexView import IndexView

@@ -5,7 +5,7 @@ from django.templatetags.static import static
 
 
 class Scrud(models.Model):
-    #data = models.CharField(max_length=200)
+    # data = models.CharField(max_length=200)
 
     @staticmethod
     def has_equal(scrud=None, form=None):
@@ -23,13 +23,12 @@ class Scrud(models.Model):
 
 
 class User(DjangoUser):
-
     @staticmethod
     def has_equal(scrud=None, form=None):
         return False
         # scruds = Scrud.objects.all()
         # for s in scruds:
-        #     if scrud and s.data == scrud.data:
+        # if scrud and s.data == scrud.data:
         #         return True
         #     if form and s.data == form.cleaned_data['data']:
         #         return True
@@ -47,15 +46,15 @@ class Group(DjangoGroup):
         pass
 
 
-#### Specific application models
+# ### Specific application models
 
 DEVICE_TYPES = (
-    ('pc', 'Computer'),
-    ('phone', 'Cellphone'),
-    ('printer', 'Printer'),
-    ('hub', 'Hub'),
-    ('router', 'Router'),
-    ('modem', 'Modem')
+    ('0_modem', 'Modem'),
+    ('1_router', 'Router'),
+    ('2_hub', 'Hub'),
+    ('3_pc', 'Computer'),
+    ('4_printer', 'Printer'),
+    ('5_phone', 'Cellphone')
 )
 
 
@@ -76,7 +75,6 @@ class Device(models.Model):
             onOff = 'on'
         else:
             onOff = 'off'
-
         return static('images/' + self.type + '_' + onOff + '.png')
 
     def isOn(self):
@@ -84,6 +82,24 @@ class Device(models.Model):
 
     def isOnline(self):
         return True
+
+    def getConnectedDevices(self):
+        returnDevices = []
+        cons = DeviceConnection.objects.all()
+        for con in cons:
+            if self == con.device1:
+                returnDevices.append(con.device2)
+            if self == con.device2:
+                returnDevices.append(con.device1)
+        return returnDevices
+
+    def __str__(self):
+        return self.name + ' - ' + self.ipAddress
+
+
+class DeviceConnection(models.Model):
+    device1 = models.ForeignKey(Device, related_name='Device 1')
+    device2 = models.ForeignKey(Device, related_name='Device 2')
 
 
 class SiteHistory(models.Model):

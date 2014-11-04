@@ -2,29 +2,48 @@
 <head>
     {% load static %}
 
-    <title></title>
+    <title>Network Control Panel - Login</title>
+
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}"/>
+    <link rel="stylesheet" href="{% static 'css/bootstrap-theme.css' %}"/>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'css/bootstrap-theme.min.css' %}"/>
+
+    <link rel="stylesheet" href="{% static 'css/login.css' %}"/>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
 
 </head>
 <body>
 
-<form role="form" method="post" action="{% url 'login' %}">
-    {% csrf_token %}
-    <div>
-        <label>Login</label>
-        <input type="text" id="username" name="username" placeholder="Enter login">
+    <div class="title">
+        <h2>Network Control Panel</h2>
     </div>
-    <div>
-        <label>Password</label>
-        <input type="password" class="form-control" id="password" name="password"
-               placeholder="Password">
-    </div>
-    <button type="submit">Login</button>
-    <div>
-        <label>
-            <input type="checkbox"> Remember my details
-        </label>
-    </div>
-</form>
 
+<div class="center">
+    <div class="up"></div>
+    <div class="middle">
+        <form role="form" method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+            <table>
+                <tr>
+                    <td class="right"><label>Login</label></td>
+                    <td class="left"><input type="text" id="username" name="username" placeholder="Enter login"></td>
+                </tr>
+                <tr>
+                    <td class="right"><label>Password</label></td>
+                    <td class="left"><input type="password" id="password" name="password" placeholder="Password"></td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <button class="btn btn-default" type="submit">Login</button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <div class="down"></div>
+</div>
 </body>
 </html>

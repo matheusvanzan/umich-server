@@ -9,6 +9,8 @@ urlpatterns = [  # Genereal urls
 
     url(r'^error/$', ErrorView.as_view(), name='error'),
     url(r'^result/$', ResultView.as_view(), name='result'),
+
+    url(r'^device/(?P<device_id>\d+)/$', DeviceView.as_view(), name='device'),
 ]
 
 #Scrud urls
