@@ -2,40 +2,29 @@
 {% load staticfiles %}
 
 {% block headers %}
-
     <link rel="stylesheet" href="{% static 'css/map.css' %}"/>
-{% endblock %}
 
-{% block more %}
-    What would you like to do now?
-
-    <br>
-
-    <ul>
-        <li><a href="#">Item 1</a></li>
-        <li><a href="#">Item 2</a></li>
-        <li><a href="#">Item 3</a></li>
-        <li><a href="#">Item 4</a></li>
-        <li><a href="#">Item 5</a></li>
-    </ul>
-
+    <script src="{% static 'js/jquery.line-master/jquery.line.js' %}"></script>
 {% endblock %}
 
 {% block pageTitle %}Network Map{% endblock %}
 
 {% block content %}
-    <div class="switch">
-        <button id="buttonCircle" class="leftButton">Circle</button>
-        <button id="buttonList" class="middleButton">List</button>
-        <button id="buttonMap" class="rightButton">Map</button>
-        <br><br>
-        <button id="buttonCon" class="myButton">Show connections</button>
-    </div>
 
+    <div id="map" class="map">
 
-    <div id="map" class="container">
+        <div class="switch">
+            <button id="buttonCircle" class="leftButton">Circle</button>
+            <button id="buttonList" class="middleButton">List</button>
+            <button id="buttonMap" class="rightButton">Map</button>
+            <br><br>
+            <button id="buttonInfo" class="myButton">Hide info</button>
+            <br><br>
+            <button id="buttonCon" class="myButton">Show connections</button>
+        </div>
+
         {% for device in devices %}
-            <div id="info_{{ device.id }}" class="centerV hidden">
+            <div id="info_{{ device.id }}" class="info centerV hidden">
                 <table class="center">
                     <thead>
                     <tr>
@@ -74,7 +63,11 @@
                         <td class="left">{{ device.isWireless }}</td>
                     </tr>
                     <tr>
-                        <td colspan="2" class="center"><a class="notLink" href="{% url 'device' device.id %}">More info...</a></td>
+                        <td colspan="2" class="center">
+                            <a class="notLink" href="{% url 'device' device.id %}">
+                                More info...
+                            </a>
+                        </td>
                     </tr>
                     </tbody>
                 </table>
@@ -82,190 +75,258 @@
 
             <div id="device_{{ device.id }}" class="device">
                 <a class="notLink" href="{% url 'device' device.id %}">
-                    <b>{{ device.name }}</b>
+                    <b class="deviceBack">{{ device.name }}</b>
                     <br><br>
-                    <img id="img_{{ device.id }}" class="device" src="{{ device.getImage }}"/>
+                    <img id="img_{{ device.id }}" class="device" src="{{ device.getImage }}" />
                 </a>
             </div>
         {% endfor %}
+
+        <div id="connections" class="connections"></div>
     </div>
 
 
     <script type="text/javascript">
-        var n = {{ devices|length }};
-        var teta = 2 * Math.PI / n;
+    var n = {{ total }};
+    var teta = 2 * Math.PI / n;
+    var tetaNew;
 
-        var $map = $("#map");
-        var radius = $map.height() / 2 * 0.9;
-        var infoSize = $map.height() / 2;
+    var $map = $("#map");
+    var $con = $("#connections");
 
-        var $lastInfo, $lastDevice;
+    var radius = $map.height() / 2 * 0.8;
+    var radiusNew;
 
-        var duration = 2000;
-        var easing = "swing";
+    var deviceSize = 70;
+    var infoSize = $map.height() / 2;
+
+    var $lastInfo, $lastDevice;
+
+    var duration = 3000;
+    var easing = "swing";
+
+    var showHideInfos = "hide";
+    var showHideCons = "show";
+
+    {% for device in devices %}
+        var $info_{{ device.id }} = $("#info_{{ device.id }}");
+        var $device_{{ device.id }} = $("#device_{{ device.id }}");
+    {% endfor %}
+
+    var $buttonCircle = $("#buttonCircle");
+    var $buttonList = $("#buttonList");
+    var $buttonMap = $("#buttonMap");
+    var $buttonInfo = $("#buttonInfo");
+    var $buttonCon = $("#buttonCon");
+
+    $(document).ready(function () {
+
+        loadItems();
+
+        //set DEVICE circle position
+        loadCircle();
 
         {% for device in devices %}
-            var $info_{{ device.id }} = $("#info_{{ device.id }}");
-            var $device_{{ device.id }} = $("#device_{{ device.id }}");
+            //set DEVICE hover shadow
+            $device_{{ device.id }}.hover(function () {
+                if ($lastDevice) {
+                    $lastDevice.removeClass("deviceHover");
+                    $lastDevice.addClass("device");
+                }
+                $device_{{ device.id }}.removeClass("device");
+                $device_{{ device.id }}.addClass("deviceHover");
+                $lastDevice = $device_{{ device.id }};
+
+                if ($lastInfo) {
+                    $lastInfo.addClass("hidden");
+                }
+                $info_{{ device.id }}.removeClass("hidden");
+                $lastInfo = $info_{{ device.id }};
+            });
+
+        {% endfor %}
+    });
+
+    $map.resize(function () {
+        //reload everything
+    });
+
+    function loadItems() {
+        {% for device in devices %}
+            //set device size
+            $device_{{ device.id }}.width(deviceSize);
+            $device_{{ device.id }}.height(deviceSize);
+
+            //set INFO size
+            $info_{{ device.id }}.width(infoSize);
+            $info_{{ device.id }}.height(infoSize);
+
+            //set DEVICE position
+            var left = $map.width() / 2 - $device_{{ device.id }}.width() / 2;
+            var top = $map.height() / 2 - $device_{{ device.id }}.height() / 2;
+            $device_{{ device.id }}.offset({ top: top, left: left });
+            $info_{{ device.id }}.offset({ top: top, left: left });
+        {% endfor %}
+    }
+
+    function loadCircle() {
+        {% for device in devices %}
+            //relocate INFOS
+            $info_{{ device.id }}.animate({
+                "left": Math.floor($map.width() / 2 - $info_{{ device.id }}.width() / 2).toString() + "px",
+                "top": Math.floor($map.height() / 2 - $info_{{ device.id }}.height()).toString() + "px"
+            }, duration, easing);
+
+            //relocate DEVICES
+            var left = $map.width() / 2 - $device_{{ device.id }}.width() / 2;
+            var top = $map.height() / 2 - $device_{{ device.id }}.height() / 2;
+
+            $device_{{ device.id }}.animate({
+                "left": Math.floor(left + radius * Math.sin(teta * {{ forloop.counter0 }})).toString() + "px",
+                "top": Math.floor(top + radius * Math.cos(teta * {{ forloop.counter0 }})).toString() + "px"
+            }, duration, easing);
         {% endfor %}
 
-        $buttonCircle = $("#buttonCircle");
-        $buttonList = $("#buttonList");
-        $buttonMap = $("#buttonMap");
+        {#            $buttonCircle.css("disabled: true;");#}
+        {#            $buttonList.css("disabled: false;");#}
+        {#            $buttonMap.css("disabled: false;");#}
 
-        $(document).ready(function () {
+    }
 
-            loadItems();
+    function loadList() {
+        var lastType = "";
 
-            //set DEVICE circle position
-            loadCircle();
+        var deviceOffset = 100;
+        var deviceSpaceH = 100, deviceSpaceV = 100;
 
-            {% for device in devices %}
-                //set DEVICE hover shadow
-                $device_{{ device.id }}.hover(function () {
-                    if ($lastDevice) {
-                        $lastDevice.removeClass("deviceHover");
-                        $lastDevice.addClass("device");
-                    }
-                    $device_{{ device.id }}.removeClass("device");
-                    $device_{{ device.id }}.addClass("deviceHover");
-                    $lastDevice = $device_{{ device.id }};
+        var row = 0, count = -1;
+        var quantRow = ($map.offset().left + $map.width() - infoSize - deviceOffset) / (deviceSpaceH) - 1;
 
-                    if ($lastInfo) {
-                        $lastInfo.addClass("hidden");
-                    }
-                    $info_{{ device.id }}.removeClass("hidden");
-                    $lastInfo = $info_{{ device.id }};
-                });
+        {% for device in devices %}
+            //relocate INFOS
+            $info_{{ device.id }}.animate({
+                "left": ($map.offset().left + 10).toString() + "px",
+                "top": "+=0"
+            }, duration, easing);
 
-            {% endfor %}
-        });
+            //relocate DEVICES
+            count += 1;
 
-        $map.resize(function () {
-           //reload everuthing
-        });
+            if ((count > quantRow) || (lastType != "{{ device.type }}")) {
+                row += 1;
+                count = 0;
+                lastType = "{{ device.type }}";
+            }
 
-        function loadItems() {
-            {% for device in devices %}
-                //set INFO size
-                $info_{{ device.id }}.width(infoSize);
-                $info_{{ device.id }}.height(infoSize);
+            var left = infoSize + deviceOffset + count * deviceSpaceH;
+            var top = deviceOffset / 2 + deviceSpaceV * (row - 1);
 
-
-                //set DEVICE position
-                var left = $map.width() / 2 - $device_{{ device.id }}.width() / 2;
-                var top = $map.height() / 2 - $device_{{ device.id }}.height() / 2;
-                $device_{{ device.id }}.offset({ top: top, left: left });
-                $info_{{ device.id }}.offset({ top: top, left: left });
-            {% endfor %}
-        }
-
-        function loadCircle() {
-            {% for device in devices %}
-                //relocate INFOS
-                $info_{{ device.id }}.animate({
-                    "left": Math.floor($map.width() / 2 - $info_{{ device.id }}.width() / 2).toString() + "px",
-                    "top": Math.floor($map.height() / 2 - $info_{{ device.id }}.height()).toString() + "px"
-                }, duration, easing);
-
-                //relocate DEVICES
-                var left = $map.width() / 2 - $device_{{ device.id }}.width() / 2;
-                var top = $map.height() / 2 - $device_{{ device.id }}.height() / 2;
-
-                $device_{{ device.id }}.animate({
-                    "left": Math.floor(left + radius * Math.sin(teta * {{ forloop.counter0 }})).toString() + "px",
-                    "top": Math.floor(top + radius * Math.cos(teta * {{ forloop.counter0 }})).toString() + "px"
-                }, duration, easing);
-            {% endfor %}
-
-            {#            $buttonCircle.css("disabled: true;");#}
-            {#            $buttonList.css("disabled: false;");#}
-            {#            $buttonMap.css("disabled: false;");#}
-        }
-
-        function loadList() {
-            var lastType = "";
-            var leftBorder;
-
-            var deviceOffset = 100;
-            var deviceSpaceH = 150, deviceSpaceV = 120;
-
-            var row = 0, count = 0;
-            var quantRow = ($map.offset().left + $map.width() - infoSize - deviceOffset) / (deviceSpaceH) - 1;
-
-            {% for device in devices %}
-                //relocate INFOS
-                $info_{{ device.id }}.animate({
-                    "left": ($map.offset().left + 10).toString() + "px",
-                    "top": "+=0"
-                }, duration, easing);
-
-                //relocate DEVICES
-                var left = infoSize + deviceOffset + count * deviceSpaceH;
-                {#                                alert(count + ": " + quantRow);#}
-
-                count += 1;
-
-                if ((count > quantRow) || (lastType != "{{ device.type }}")) {
-                    row += 1;
-                    count = 0;
-                    lastType = "{{ device.type }}";
-                }
-
-                var top = deviceSpaceV * (row - 1); //dont remember why -1
-
-                {#                alert((left).toString() + "px - " + $map.width().toString());#}
-
-                $device_{{ device.id }}.animate({
-                    "left": Math.floor(left).toString() + "px",
-                    "top": Math.floor(top).toString() + "px"
-                }, duration, easing);
-            {% endfor %}
-        }
-
-        function loadMap() {
-            //hide all info
-            {% for device in devices %}
-                $info_{{ device.id }}.addClass("hidden");
-            {% endfor %}
-
-            //position first device
-            var left = $map.width() / 2 - $device_{{ firstDevice.id }}.width() / 2;
-            var top = $map.height() / 2 - $device_{{ firstDevice.id }}.height() / 2;
-
-            $device_{{ firstDevice.id }}.animate({
+            $device_{{ device.id }}.animate({
                 "left": Math.floor(left).toString() + "px",
                 "top": Math.floor(top).toString() + "px"
             }, duration, easing);
+        {% endfor %}
+    }
 
-            //position connected to first device
-            drawCircle({{ firstDevice.id }});
+    function loadMap() {
+{#        var nMap = {{ routersAndHubs|length }};#}
+{#        var tetaMap = 2 * Math.PI / nMap;#}
 
-            function drawCircle(deviceCenterId) {
+        {% for device in devices %}
+            //relocate INFOS
+            $info_{{ device.id }}.animate({
+                "left": ($map.offset().left + 10).toString() + "px",
+                "top": "+=0"
+            }, duration, easing);
+        {% endfor %}
 
-                {#                {% for device in firstDevice|id:0.getConnectedDevices %}#}
-                {#                {% for device in devices %}#}
-                {#                    $device_{{ device.id }}.animate({#}
-                {#                        "left": Math.floor(left).toString() + "px",#}
-                {#                        "top": Math.floor(top).toString() + "px"#}
-                {#                    }, duration, easing);#}
-                {#                {% endfor %}#}
-            }
+        //MODEM - should be just one
+        var left = $map.width() / 2 - $device_{{ firstDevice.id }}.width() / 2;
+        var top = $map.height() / 2 - $device_{{ firstDevice.id }}.height() / 2;
 
-            //repeat for each device connected to first device
+        $device_{{ firstDevice.id }}.animate({
+            "left": Math.floor(left).toString() + "px",
+            "top": Math.floor(top).toString() + "px"
+        }, duration, easing);
 
-        }
+        //OTHERS
+        {% for device in devices %}
+            radiusNew = ({{ device.getLevel }} / {{ device.getMaxLevel }}).toPrecision(3) * radius;
+            tetaNew = ({{ device.getTeta }}).toPrecision(3);
+            $device_{{ device.id }}.animate({
+                "left": Math.floor(left + radiusNew * Math.sin(tetaNew)).toString() + "px",
+                "top": Math.floor(top + radiusNew * Math.cos(tetaNew)).toString() + "px"
+            }, duration, easing);
+        {% endfor %}
+    }
 
+    function showInfos() {
+        $lastInfo.removeClass("hidden");
 
-        $buttonCircle.click(function () {
-            loadCircle()
-        });
-        $buttonList.click(function () {
-            loadList()
-        });
-        $buttonMap.click(function () {
-            loadMap()
-        });
+        showHideInfos = "hide";
+        $buttonInfo.html("Hide info");
+    }
+
+    function hideInfos() {
+        $lastInfo.addClass("hidden");
+
+        showHideInfos = "show";
+        $buttonInfo.html("Show info");
+    }
+
+    function showCons() {
+        hideCons();
+
+        {% for device in devices %}
+            {% for conDevice in device.getChildDevices %}
+                var topBar = $map.offset().top;
+                var x1 = $device_{{ device.id }}.offset().left + $device_{{ device.id }}.width() / 2,
+                        y1 = $device_{{ device.id }}.offset().top + $device_{{ device.id }}.height() / 2 - topBar,
+                        x2 = $device_{{ conDevice.id }}.offset().left + $device_{{ conDevice.id }}.width() / 2,
+                        y2 = $device_{{ conDevice.id }}.offset().top + $device_{{ conDevice.id }}.height() / 2 - topBar;
+
+                $con.line(x1, y1, x2, y2);
+            {% endfor %}
+        {% endfor %}
+
+        $con.show();
+
+        showHideCons = "hide";
+        $buttonCon.html("Hide connections");
+    }
+
+    function hideCons() {
+        $con.empty();
+
+        showHideCons = "show";
+        $buttonCon.html("Show connections");
+    }
+
+    $buttonCircle.click(function () {
+        hideCons();
+        loadCircle();
+    });
+    $buttonList.click(function () {
+        hideCons();
+        loadList();
+    });
+    $buttonMap.click(function () {
+        hideCons();
+        loadMap();
+    });
+
+    $buttonInfo.click(function () {
+        if (showHideInfos == "show")
+            showInfos();
+        else
+            hideInfos();
+    });
+    $buttonCon.click(function () {
+        if (showHideCons == "show")
+            showCons();
+        else
+            hideCons();
+    });
 
     </script>
 {% endblock %}

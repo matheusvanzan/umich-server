@@ -1,12 +1,15 @@
 {% extends master_scrud %}
 
+{% block pageTitle %}User{% endblock %}
+
 {% block show_all %}
-    <h1 class="bg-white content-heading border-bottom">Usuários</h1>
+    <br><br><br>
+
     <table class="colVis table">
         <thead class="bg-gray">
         <tr>
-            <th>Nome</th>
-            <th>Sobrenome</th>
+            <th>First Name</th>
+            <th>Last Name</th>
             <th>Login</th>
             <th>Email</th>
             <th></th>
@@ -20,12 +23,12 @@
                 <td>{{ u.username }}</td>
                 <td>{{ u.email }}</td>
                 <td>
-                    <button class="btn btn-success"><a href="{% url 'user' u.id %}" style="color: white;">Editar</a></button>
+                    <button class="btn btn-success"><a href="{% url 'user' u.id %}" style="color: white;">Edit</a></button>
                 </td>
             </tr>
         {% endfor %}
         <tr>
-            <td><a href="{% url 'user' %}">Novo...</a></td>
+            <td><a href="{% url 'user' %}">New...</a></td>
             <td></td>
             <td></td>
             <td></td>
@@ -36,7 +39,8 @@
 {% endblock %}
 
 {% block scrud %}
-    <h1 class="bg-white content-heading border-bottom">Usuário</h1>
+
+    <br><br><br><br>
 
     {{ error_message }}
 
@@ -46,7 +50,7 @@
         <form action="{% url 'user' %}" method="post">
     {% endif %}
             {% csrf_token %}
-            <table class="colVis table">
+            <table class="table">
                 <tbody>
                     {% for field in form %}
                         <tr>
@@ -58,7 +62,7 @@
                     <tr>
                         <td>
                             <button type="submit" class="btn btn-success" style="color: white;">
-                                Salvar
+                                Save
                             </button>
                         </td>
                         <td></td>
@@ -67,7 +71,7 @@
                                 <td>
                                     <button class="btn btn-danger">
                                         <a href="{% url 'user_deactivate' user_id %}" style="color: white;">
-                                            Deletar
+                                            Delete
                                         </a>
                                     </button>
                                 </td>

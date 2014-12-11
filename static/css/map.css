@@ -3,7 +3,39 @@ html, body {
     width: 100%;
 }
 
-/* General effect styles */
+div.map {
+    position: absolute;
+    padding: 0;
+    margin: 0;
+    top: 6%;
+    bottom: 5%;
+
+    height: 89%;
+    width: 100%;
+
+    z-index: 1;
+
+    /*background-color: green;*/
+}
+
+div.connections {
+    position: absolute;
+    padding: 0;
+    margin: 0;
+    top: 0;
+    bottom: 0;
+
+    height: 100%;
+    width: 100%;
+
+    z-index: 100;
+    /*background-color: red;*/
+}
+
+div.info {
+    z-index: 500;
+}
+
 div.hidden {
     display: none;
 }
@@ -13,8 +45,6 @@ div.centerV {
     position: absolute;
     top: 0;
     bottom: 0;
-
-    /*background-color: red;*/
 }
 
 div.centerH {
@@ -23,8 +53,6 @@ div.centerH {
     left: 0;
     right: 0;
     text-align: center;
-
-    /*background-color: red;*/
 }
 
 div.fixed {
@@ -39,26 +67,30 @@ div.left {
     /*background-color: red;*/
 }
 
-div.device {
+div.deviceHover {
+    width: 100px;
+    height: 100px; /*changed in jquery*/
+
     margin: auto;
     position: absolute;
-    width: 100px;
-    height: 100px;
     text-align: center;
+    z-index: 400;
+    background: url("../images/shadow.png") no-repeat center bottom;
+    background-size: 100% 35%;
+}
+
+div.device {
+    width: 100px;
+    height: 100px; /*changed in jquery*/
+
+    margin: auto;
+    position: absolute;
+    text-align: center;
+
+    z-index: 500;
 
     background: none;
     /*background-color: red;*/
-}
-
-div.deviceHover {
-    margin: auto;
-    position: absolute;
-    width: 100px;
-    height: 100px;
-    text-align: center;
-
-    background: url("../images/shadow.png") no-repeat center bottom;
-    background-size: 100% 35%;
 }
 
 div.switch {
@@ -67,7 +99,13 @@ div.switch {
     right: 0;
     margin-top: 2%;
     margin-right: 2%;
-    z-index: 200;
+    z-index: 500;
+}
+
+.deviceBack {
+    background-color: #809EB2;
+
+    font-size: 0.6vw;
 }
 
 img.device {
@@ -91,7 +129,7 @@ table.center {
     right: 0;
     border: none;
 
-    font-size: 1.2vw;
+    font-size: 1.1vw;
 
     /*background-color: green;*/
 }
@@ -148,14 +186,3 @@ button.myButton {
     padding: 0;
 }
 
-.container {
-    position: relative;
-    height: 100%;
-    width: 100%;
-}
-
-/* Specific effects: Id's */
-
-#map {
-    /*background-color: red;*/
-}

@@ -1,0 +1,107 @@
+html, body {
+    height: 100%;
+    width: 100%;
+}
+
+div.content {
+    position: absolute;
+    padding: 0;
+    margin: 0;
+    top: 6%;
+    bottom: 5%;
+
+    height: 89%;
+    width: 100%;
+
+    /*background-color: red;*/
+}
+
+div.infoLeft {
+    position: absolute;
+    padding: 0;
+    margin: 0;
+    left: 5%;
+    right: 30%;
+    top: 6%;
+    bottom: 5%;
+
+    height: 89%;
+    width: 25%;
+
+    /*background-color: green;*/
+}
+
+div.graphRight {
+    position: absolute;
+    padding: 0;
+    margin: 0;
+    left: 35%;
+    right: 5%;
+    top: 6%;
+    bottom: 5%;
+
+    height: 89%;
+    width: 60%;
+
+    /*background-color: green;*/
+}
+
+.centerV {
+    margin: auto;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+}
+
+.centerH {
+    margin: auto;
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: center;
+}
+
+th.center {
+    text-align: center;
+    padding-bottom: 4%;
+
+    font-size: 1.7vw;
+}
+
+td.center {
+    text-align: center;
+    padding-top: 2%;
+}
+
+td.right {
+    text-align: right;
+    width: 50%;
+    padding-right: 1%;
+}
+
+td.left {
+    text-align: left;
+    width: 50%;
+    padding-left: 1%;
+}
+
+button.leftButton {
+    width: 70px;
+    border-radius: 15px 0 0 15px;
+    border: 0;
+    padding: 0;
+}
+
+button.middleButton {
+    width: 70px;
+    border-radius: 0;
+    border: 0;
+    padding: 0;
+}
+
+button.rightButton {
+    width: 70px;
+    border-radius: 0 15px 15px 0;
+    border: 0;
+    padding: 0;
+}

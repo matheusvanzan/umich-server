@@ -3,7 +3,9 @@
 
 {% block headers %}
 
-    <link rel="stylesheet" href="{% static 'css/map.css' %}"/>
+    <link rel="stylesheet" href="{% static 'css/device.css' %}"/>
+    <script src="{% static 'js/Chart.js-master/Chart.js' %}"></script>
+
 {% endblock %}
 
 {% block more %}
@@ -17,10 +19,127 @@
 
 {% block content %}
 
-    Device id: {{ device.id }}
+    <div class="content">
+        <div class="infoLeft">
+{##}
+{#            {% if urls %}#}
+{#                <div class="switch">#}
+{#                    <button id="buttonLine" class="leftButton">Line</button>#}
+{#                    <button id="buttonBar" class="middleButton">Bar</button>#}
+{#                    <button id="buttonRadar" class="rightButton">Radar</button>#}
+{#                </div>#}
+{#            {% endif %}#}
+{##}
+{#            <br><br>#}
 
-    <br>
+            <table class="centerV centerH">
+                <thead>
+                <tr>
+                    <th colspan="2" class="center">
+                        <b>{{ device.name }}</b>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td class="right"><b>Type</b></td>
+                    <td class="left">{{ device.get_type_display }}</td>
+                </tr>
+                <tr>
+                    <td class="right"><b>Mac Address</b></td>
+                    <td class="left">{{ device.macAddress }}</td>
+                </tr>
+                <tr>
+                    <td class="right"><b>IP Address</b></td>
+                    <td class="left">{{ device.ipAddress }}</td>
+                </tr>
+                <tr>
+                    <td class="right"><b>Operating System</b></td>
+                    <td class="left">{{ device.opSystem }}</td>
+                </tr>
+                <tr>
+                    <td class="right"><b>Last turned On</b></td>
+                    <td class="left">{{ device.lastOn }}</td>
+                </tr>
+                <tr>
+                    <td class="right"><b>Last Online</b></td>
+                    <td class="left">{{ device.lastOnline }}</td>
+                </tr>
+                <tr>
+                    <td class="right"><b>Is Wireless</b></td>
+                    <td class="left">{{ device.isWireless }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
 
-    Device details: {{ device }}
+        <div class="graphRight">
+            <canvas id="myChart" width="700" height="500"></canvas>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        var $graphRight = $(".graphRight");
+        var $myChart = $("#myChart");
+
+        var $buttonLine = $("#buttonLine");
+        var $buttonBar = $("#buttonBar");
+        var $buttonRadar = $("#buttonRadar");
+
+        var ctx, myChart;
+
+        var data = {
+            labels: [
+                {% for url in urls %}"{{ url }}",{% endfor %}
+            ],
+            datasets: [
+                {
+                    label: "My First dataset",
+                    fillColor: "rgba(220,220,220,0.2)",
+                    strokeColor: "rgba(220,220,220,1)",
+                    pointColor: "rgba(220,220,220,1)",
+                    pointStrokeColor: "#fff",
+                    pointHighlightFill: "#fff",
+                    pointHighlightStroke: "rgba(220,220,220,1)",
+                    data: [
+                        {% for quant in quants %}{{ quant }},{% endfor %}
+                    ]
+                }
+            ]
+        };
+
+        $(document).ready(function () {
+            ctx = $myChart.get(0).getContext("2d");
+            myChart = new Chart(ctx).Line(data);
+
+            $myChart.width($graphRight.width());
+            $myChart.height($graphRight.height());
+        });
+{##}
+{##}
+{#        $buttonLine.click(function () {#}
+{#            $myChart.empty();#}
+{#            myChart = new Chart(ctx).Line(data);#}
+{##}
+{#            $myChart.width($graphRight.width());#}
+{#            $myChart.height($graphRight.height());#}
+{#        });#}
+{##}
+{#        $buttonBar.click(function () {#}
+{#            $myChart.empty();#}
+{#            myChart = new Chart(ctx).Bar(data);#}
+{##}
+{#            $myChart.width($graphRight.width());#}
+{#            $myChart.height($graphRight.height());#}
+{#        });#}
+{##}
+{#        $buttonRadar.click(function () {#}
+{#            $myChart.empty();#}
+{#            myChart = new Chart(ctx).Radar(data);#}
+{##}
+{#            $myChart.width($graphRight.width());#}
+{#            $myChart.height($graphRight.height());#}
+{#        });#}
+    </script>
 
 {% endblock %}

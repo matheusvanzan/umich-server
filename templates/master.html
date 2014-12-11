@@ -22,37 +22,34 @@
 <body>
 <!-- Content -->
 
-
 <button id="menuButton"></button>
 
-
 <div id="menu">
+    <h4 class="menuTitle">Network Control Panel</h4>
 
-    <h3 class="title">Network Control Panel</h3>
+    <br>
 
     <ul class="menu">
-        <li class="menuItem"><a href="#">Devices</a>
-{#            <ul class="menu">#}
-{#                <li class="menuItem">subitem</li>#}
-{#            </ul>#}
-        </li>
-        <li class="menuItem"><a href="#">Statistics</a></li>
-        <li class="menuItem"><a href="#">Auth Control</a></li>
-        <li class="menuItem"><a href="#">Configuration</a></li>
-        <li class="menuItem"><a href="#">Script</a></li>
-        <li class="menuItem"><a href="#">About</a></li>
+        <li class="menuItem"><a href="{% url 'index' %}">Network Map</a></li>
+{#        <li class="menuItem"><a href="#">Statistics</a></li>#}
+        <li class="menuItem"><a href="{% url 'user_all' %}">Manage Users</a></li>
+        <li class="menuItem"><a href="{% url 'group_all' %}">Manage Groups</a></li>
+        <li class="menuItem"><a href="{% url 'logout' %}">Logout</a></li>
+{#        <li class="menuItem"><a href="#">Configuration</a></li>#}
+{#        <li class="menuItem"><a href="#">Slave Script</a></li>#}
+{#        <li class="menuItem"><a href="#">About</a></li>#}
     </ul>
 
-    <div class="more">
-        <hr>
-        {% block more %}{% endblock %}
-    </div>
+{#    <div class="more">#}
+{#        <hr>#}
+{#        {% block more %}{% endblock %}#}
+{#    </div>#}
 </div>
 
 <div id="content">
     <div class="topBar">
         <div class="pageTitle">
-            <h3>{% block pageTitle %}{% endblock %}</h3>
+            <h4 class="title">{% block pageTitle %}{% endblock %}</h4>
         </div>
         <div class="user">
 
@@ -64,7 +61,7 @@
     </div>
 
     <div class="bottomBar">
-        Developed by MV Developers
+        Developed by Matheus Vanzan &amp; Marcos Valle
     </div>
 </div>
 

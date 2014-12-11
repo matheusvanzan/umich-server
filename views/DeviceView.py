@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from .LoggedView import LoggedView
 from django.shortcuts import render, get_object_or_404
-from ..models import Device
+from ..models import Device, SiteHistory
 
 
 class DeviceView(LoggedView):
@@ -21,6 +21,16 @@ class DeviceView(LoggedView):
     def get(self, request, *args, **kwargs):
         super(DeviceView, self).get(request, *args, **kwargs)
 
+        urls = []
+        quants = []
+
+        row = SiteHistory().getHistory(self.device)
+        for url, quant in row:
+            urls.append(url)
+            quants.append(quant)
+
         self.data.update({'device': self.device})
+        self.data.update({'urls': urls})
+        self.data.update({'quants': quants})
 
         return render(request, self.template, self.data)

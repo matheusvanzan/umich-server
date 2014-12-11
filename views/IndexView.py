@@ -11,21 +11,14 @@ class IndexView(LoggedView):
         super(IndexView, self).get(request, *args, **kwargs)
 
         # CIRCLE and LIST view information
-        devices = Device.objects.order_by('type')
+        devices = Device().getAllDevices()
+        firstDevice = Device().getFirstDevice()
+        otherDevices = Device().getOtherDevices()
+        total = Device().getQuantDevices()
+
         self.data.update({'devices': devices})
-
-        # MAP view information
-        modems = Device.objects.filter(type='0_modem')
-        routers = Device.objects.filter(type='1_router')
-
-        self.firstDevice = Device()
-        if len(modems) != 0:
-            self.firstDevice = modems[0]
-        elif len(routers) != 0:
-            self.firstDevice = routers[0]
-        else:
-            self.firstDevice = devices[0]
-
-        self.data.update({'firstDevice': self.firstDevice})
+        self.data.update({'firstDevice': firstDevice})
+        self.data.update({'otherDevices': otherDevices})
+        self.data.update({'total': total})
 
         return render(request, self.template, self.data)

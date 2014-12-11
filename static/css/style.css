@@ -28,6 +28,10 @@ div.pageTitle {
     padding: 0 0 0 5%;
 }
 
+h4.title {
+    font-size: 1.1vw;
+}
+
 div.bottomBar {
     position: fixed;
     bottom: 0;
@@ -42,10 +46,16 @@ div.bottomBar {
 }
 
 div.container {
+    position: absolute;
+
+    margin: 0;
+    padding: 0;
     top: 6%;
     bottom: 5%;
     width: 100%;
     height: 89%;
+
+    /*background-color: red;*/
 }
 
 a.notLink {
